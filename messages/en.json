@@ -1,0 +1,128 @@
+{
+  "Metadata": {
+    "home": {
+      "title": "RIWAY MEDIA GROUP – Music, AI Audio & Cinematic Content for Global Networks",
+      "description": "A Vietnam-based media group building music, AI-powered audio and cinematic content systems for partnerships across global networks."
+    },
+    "explore": {
+      "title": "Explore",
+      "description": "Explore upcoming TV series, anime and vertical dramas distributed by RIWAY MEDIA GROUP across global networks."
+    }
+  },
+  "Common": {
+    "nav": {
+      "explore": "Explore",
+      "contact": "Contact for Partnership"
+    },
+    "menu": "Open menu",
+    "close": "Close menu",
+    "language": "Change language",
+    "locales": {
+      "en": "English",
+      "vi": "Tiếng Việt"
+    },
+    "previous": "Previous",
+    "next": "Next",
+    "goTo": "Go to slide {index}",
+    "backToTop": "Back to top"
+  },
+  "Categories": {
+    "tvSeries": "TV Series",
+    "music": "Music",
+    "anime": "Anime",
+    "verticalDrama": "Vertical Drama"
+  },
+  "Footer": {
+    "description": "RIWAY MEDIA GROUP develops music, AI-powered audio, and cinematic content systems for partnerships across global networks.",
+    "contactTitle": "Contact Us",
+    "email": "Email: {email}",
+    "whatsapp": "Whatsapp: {phone}",
+    "address": "Address: LK4-03, Doc Bun 1, Ha Dong Ward, Hanoi, Vietnam.",
+    "copyright": "© {year} — Copyright"
+  },
+  "Partners": {
+    "title": "Our Partners"
+  },
+  "ContactSection": {
+    "title": "<hl>Local</hl>\nto <hl>Global</hl>",
+    "name": "Your Name / Company Name",
+    "email": "Email",
+    "message": "Message",
+    "submit": "Leave Us a Message",
+    "sending": "Sending...",
+    "success": "Thank you! We will get back to you soon.",
+    "error": "Something went wrong. Please try again or email us directly.",
+    "errors": {
+      "name": "Please enter your name or company name.",
+      "email": "Please enter a valid email address.",
+      "message": "Please write a message of at least 10 characters."
+    }
+  },
+  "NotFound": {
+    "title": "This page could not be found",
+    "description": "The page you are looking for may have been moved or no longer exists.",
+    "back": "Back to home"
+  },
+  "HomePage": {
+    "hero": {
+      "title": "Upcoming Releases",
+      "scroll": "Scroll down"
+    },
+    "services": {
+      "title": "Our services",
+      "items": [
+        {
+          "title": "Film Distribution & Rights Management",
+          "description": "With 3 years of experience in YouTube film networks, Riway Media partners with producers and broadcasters to manage, license, and distribute content."
+        },
+        {
+          "title": "Local & Chill Music Development",
+          "description": "Partner with Riway Media to create, develop, and share unique musical experiences with wider audiences."
+        },
+        {
+          "title": "MCN Network Partnership",
+          "description": "Leverage Riway Media’s licensed music and film catalog to expand and grow your YouTube and Facebook networks."
+        },
+        {
+          "title": "Global Content Licensing & Localization",
+          "description": "Riway Media offers global content licensing, localization, and distribution across multiple genres and digital platforms."
+        }
+      ]
+    },
+    "globalPresence": {
+      "title": "Our global presence",
+      "countries": [
+        "Vietnam",
+        "China",
+        "South Korea",
+        "Taiwan",
+        "Japan",
+        "Philippines",
+        "India",
+        "Thailand",
+        "Malaysia",
+        "Spain",
+        "Germany",
+        "France",
+        "Italy",
+        "United States",
+        "United Kingdom",
+        "Russia",
+        "Mexico",
+        "Portugal",
+        "North America"
+      ]
+    },
+    "about": {
+      "title": "A Vietnam-Based Media Group Built\nfor Global Content Partnerships",
+      "tagline": "Building a Digital Media Ecosystem",
+      "channels": "YouTube Channels",
+      "years": "Years of Channel Operations",
+      "views": "<count></count>M+ Total Views",
+      "viewsLabel": "Across Platforms"
+    }
+  },
+  "ExplorePage": {
+    "title": "Explore RIWAY content"
+  }
+}

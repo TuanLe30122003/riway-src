@@ -1,0 +1,128 @@
+{
+  "Metadata": {
+    "home": {
+      "title": "RIWAY MEDIA GROUP – Âm nhạc, âm thanh AI và nội dung điện ảnh cho mạng lưới toàn cầu",
+      "description": "Tập đoàn truyền thông có trụ sở tại Việt Nam, phát triển hệ thống nội dung âm nhạc, âm thanh ứng dụng AI và điện ảnh cho các đối tác trong mạng lưới toàn cầu."
+    },
+    "explore": {
+      "title": "Khám phá",
+      "description": "Khám phá phim truyền hình, anime và phim truyền hình dọc sắp ra mắt do RIWAY MEDIA GROUP phân phối trên mạng lưới toàn cầu."
+    }
+  },
+  "Common": {
+    "nav": {
+      "explore": "Khám phá",
+      "contact": "Liên hệ hợp tác"
+    },
+    "menu": "Mở menu",
+    "close": "Đóng menu",
+    "language": "Đổi ngôn ngữ",
+    "locales": {
+      "en": "English",
+      "vi": "Tiếng Việt"
+    },
+    "previous": "Trước",
+    "next": "Tiếp",
+    "goTo": "Chuyển tới slide {index}",
+    "backToTop": "Lên đầu trang"
+  },
+  "Categories": {
+    "tvSeries": "Phim truyền hình",
+    "music": "Âm nhạc",
+    "anime": "Anime",
+    "verticalDrama": "Phim truyền hình - dọc"
+  },
+  "Footer": {
+    "description": "RIWAY MEDIA GROUP phát triển các hệ thống nội dung âm nhạc, âm thanh ứng dụng trí tuệ nhân tạo (AI) và điện ảnh dành cho các mối quan hệ đối tác trong mạng lưới toàn cầu.",
+    "contactTitle": "Liên hệ chúng tôi",
+    "email": "Email: {email}",
+    "whatsapp": "Whatsapp: {phone}",
+    "address": "Địa chỉ: LK4-03 Dọc Bún 1, Phường Hà Đông, Thành phố Hà Nội, Việt Nam.",
+    "copyright": "© {year} — Copyright"
+  },
+  "Partners": {
+    "title": "Các đối tác của chúng tôi"
+  },
+  "ContactSection": {
+    "title": "<hl>Local</hl>\nto <hl>Global</hl>",
+    "name": "Tên của bạn/Tên công ty",
+    "email": "Email",
+    "message": "Tin nhắn",
+    "submit": "Để lại lời nhắn cho chúng tôi",
+    "sending": "Đang gửi...",
+    "success": "Cảm ơn bạn! Chúng tôi sẽ phản hồi sớm.",
+    "error": "Có lỗi xảy ra. Vui lòng thử lại hoặc gửi email trực tiếp cho chúng tôi.",
+    "errors": {
+      "name": "Vui lòng nhập tên của bạn hoặc tên công ty.",
+      "email": "Vui lòng nhập email hợp lệ.",
+      "message": "Vui lòng nhập tin nhắn tối thiểu 10 ký tự."
+    }
+  },
+  "NotFound": {
+    "title": "Không tìm thấy trang",
+    "description": "Trang bạn tìm có thể đã được di chuyển hoặc không còn tồn tại.",
+    "back": "Về trang chủ"
+  },
+  "HomePage": {
+    "hero": {
+      "title": "Sắp ra mắt",
+      "scroll": "Cuộn xuống"
+    },
+    "services": {
+      "title": "Dịch vụ của chúng tôi",
+      "items": [
+        {
+          "title": "Phân phối phim & Quản lý bản quyền",
+          "description": "Với 3 năm kinh nghiệm trong mạng lưới phim trên YouTube, Riway Media hợp tác cùng nhà sản xuất và đài truyền hình để quản lý, cấp phép và phân phối nội dung."
+        },
+        {
+          "title": "Phát triển nhạc Local & Chill",
+          "description": "Hợp tác cùng Riway Media để sáng tạo, phát triển và lan tỏa những trải nghiệm âm nhạc độc đáo đến nhiều khán giả hơn."
+        },
+        {
+          "title": "Hợp tác mạng lưới MCN",
+          "description": "Tận dụng kho nhạc và phim có bản quyền của Riway Media để mở rộng và phát triển mạng lưới YouTube và Facebook của bạn."
+        },
+        {
+          "title": "Cấp phép & Bản địa hóa nội dung toàn cầu",
+          "description": "Riway Media cung cấp dịch vụ cấp phép, bản địa hóa và phân phối nội dung toàn cầu trên nhiều thể loại và nền tảng số."
+        }
+      ]
+    },
+    "globalPresence": {
+      "title": "Hiện diện toàn cầu",
+      "countries": [
+        "Việt Nam",
+        "Trung Quốc",
+        "Hàn Quốc",
+        "Đài Loan",
+        "Nhật Bản",
+        "Philippines",
+        "Ấn Độ",
+        "Thái Lan",
+        "Malaysia",
+        "Tây Ban Nha",
+        "Đức",
+        "Pháp",
+        "Ý",
+        "Hoa Kỳ",
+        "Vương quốc Anh",
+        "Nga",
+        "Mexico",
+        "Bồ Đào Nha",
+        "Bắc Mỹ"
+      ]
+    },
+    "about": {
+      "title": "Một tập đoàn truyền thông có trụ sở tại Việt Nam,\nđược xây dựng để hợp tác nội dung toàn cầu",
+      "tagline": "Phát triển hệ sinh thái truyền thông số",
+      "channels": "Kênh Youtube",
+      "years": "Số năm hoạt động kênh",
+      "views": "Hơn <count></count> triệu lượt xem",
+      "viewsLabel": "Tổng lượt xem các nền tảng"
+    }
+  },
+  "ExplorePage": {
+    "title": "Khám phá nội dung RIWAY"
+  }
+}
