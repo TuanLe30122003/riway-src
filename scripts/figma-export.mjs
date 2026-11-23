@@ -1,4 +1,4 @@
-import { mkdir } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
@@ -6,7 +6,11 @@ import sharp from "sharp";
 const FILE_KEY = process.env.FIGMA_FILE_KEY || "VLKz4IGevg4pQ3m1iQGQKC";
 const TOKEN = process.env.FIGMA_TOKEN;
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const IMAGE_DIR = join(ROOT, "public", "images");
+const PUBLIC_DIR = join(ROOT, "public");
+const IMAGE_DIR = join(PUBLIC_DIR, "images");
+const FAVICON_SOURCE = "da2985dc023f258c463eadc354d72816b57779b4";
+const INK = { r: 5, g: 13, b: 16, alpha: 1 };
+const TRANSPARENT = { r: 0, g: 0, b: 0, alpha: 0 };
 
 const IMAGES = {
   dd463802a9c83079bd5dd413440eeffde3989118: ["Common/logo-header", 600],
@@ -101,25 +105,98 @@ async function exportImages() {
   );
   console.log(`images: ${done}/${Object.keys(IMAGES).length} saved to public/images`);
   if (missing.length) console.warn(`images missing in file: ${missing.join(", ")}`);
+  return urls;
 }
 
-async function buildDerivedAssets() {
-  const emblem = join(IMAGE_DIR, "Home/logo-3d.webp");
+async function cropEmblem(input) {
+  const { data, info } = await sharp(input).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const { width, height, channels } = info;
+  const rowFilled = (y) => {
+    for (let x = 0; x < width; x += 1) if (data[(y * width + x) * channels + 3] > 24) return true;
+    return false;
+  };
+  let top = 0;
+  while (top < height && !rowFilled(top)) top += 1;
+  let bottom = top;
+  while (bottom < height && rowFilled(bottom)) bottom += 1;
+  let left = width;
+  let right = 0;
+  for (let y = top; y < bottom; y += 1) {
+    for (let x = 0; x < width; x += 1) {
+      if (data[(y * width + x) * channels + 3] > 24) {
+        left = Math.min(left, x);
+        right = Math.max(right, x);
+      }
+    }
+  }
+  return sharp(input)
+    .extract({ left, top, width: right - left + 1, height: bottom - top })
+    .png()
+    .toBuffer();
+}
+
+async function squareIcon(emblem, size, padding, background) {
+  const inner = Math.round(size * (1 - padding * 2));
+  const content = await sharp(emblem)
+    .resize(inner, inner, { fit: "contain", background: TRANSPARENT })
+    .toBuffer();
+  return sharp({ create: { width: size, height: size, channels: 4, background } })
+    .composite([{ input: content, gravity: "center" }])
+    .png()
+    .toBuffer();
+}
+
+function toIco(images) {
+  const header = Buffer.alloc(6);
+  header.writeUInt16LE(0, 0);
+  header.writeUInt16LE(1, 2);
+  header.writeUInt16LE(images.length, 4);
+  const directory = Buffer.alloc(16 * images.length);
+  let offset = header.length + directory.length;
+  images.forEach(({ size, buffer }, index) => {
+    const entry = index * 16;
+    directory.writeUInt8(size >= 256 ? 0 : size, entry);
+    directory.writeUInt8(size >= 256 ? 0 : size, entry + 1);
+    directory.writeUInt16LE(1, entry + 4);
+    directory.writeUInt16LE(32, entry + 6);
+    directory.writeUInt32LE(buffer.length, entry + 8);
+    directory.writeUInt32LE(offset, entry + 12);
+    offset += buffer.length;
+  });
+  return Buffer.concat([header, directory, ...images.map((image) => image.buffer)]);
+}
+
+async function buildIcons(urls) {
+  const url = urls[FAVICON_SOURCE];
+  if (!url) {
+    console.warn("favicon source missing in file, icons not updated");
+    return;
+  }
+  const emblem = await cropEmblem(await download(url));
+
+  const icoSizes = [16, 32, 48];
+  const icoImages = await Promise.all(
+    icoSizes.map(async (size) => ({ size, buffer: await squareIcon(emblem, size, 0.04, TRANSPARENT) })),
+  );
+  await writeFile(join(PUBLIC_DIR, "favicon.ico"), toIco(icoImages));
+
+  const pngIcons = [
+    ["icon-192.png", 192, 0.16],
+    ["icon-512.png", 512, 0.16],
+    ["apple-touch-icon.png", 180, 0.14],
+  ];
+  await Promise.all(
+    pngIcons.map(async ([name, size, padding]) =>
+      writeFile(join(PUBLIC_DIR, name), await squareIcon(emblem, size, padding, INK)),
+    ),
+  );
+
+  console.log("icons: favicon.ico, icon-192.png, icon-512.png, apple-touch-icon.png");
+}
+
+async function buildOgImage() {
   const logo = join(IMAGE_DIR, "Common/logo-footer.webp");
   const hero = join(IMAGE_DIR, "Posters/poster-07.webp");
-  const ink = { r: 5, g: 13, b: 16, alpha: 1 };
-
-  await sharp(emblem)
-    .resize(180, 180, { fit: "contain", background: ink })
-    .flatten({ background: ink })
-    .png()
-    .toFile(join(IMAGE_DIR, "Common/apple-touch-icon.png"));
-
-  await sharp(emblem)
-    .resize(64, 64, { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } })
-    .png()
-    .toFile(join(ROOT, "app", "icon.png"));
-
   const background = await sharp(hero)
     .resize(1200, 630, { fit: "cover" })
     .modulate({ brightness: 0.35 })
@@ -130,8 +207,7 @@ async function buildDerivedAssets() {
     .composite([{ input: logoLayer, gravity: "center" }])
     .jpeg({ quality: 85 })
     .toFile(join(IMAGE_DIR, "Common/og.jpg"));
-
-  console.log("derived: og.jpg, apple-touch-icon.png, app/icon.png");
+  console.log("derived: og.jpg");
 }
 
 async function main() {
@@ -139,8 +215,9 @@ async function main() {
     console.error("Missing FIGMA_TOKEN. Add it to .env.local and run: yarn figma:export");
     process.exit(1);
   }
-  await exportImages();
-  await buildDerivedAssets();
+  const urls = await exportImages();
+  await buildIcons(urls);
+  await buildOgImage();
 }
 
 main().catch((error) => {

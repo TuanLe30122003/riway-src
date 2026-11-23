@@ -30,7 +30,14 @@ export async function generateMetadata({ params }: Omit<Props, "children">): Pro
     title: { default: t("home.title"), template: `%s | ${SITE_NAME}` },
     description: t("home.description"),
     applicationName: SITE_NAME,
-    icons: { apple: "/images/Common/apple-touch-icon.png" },
+    icons: {
+      icon: [
+        { url: "/favicon.ico", sizes: "16x16 32x32 48x48" },
+        { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+        { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+      ],
+      apple: { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    },
   };
 }
 

@@ -69,7 +69,9 @@ Project được deploy trên Vercel và nối với repo GitHub này: push lên
 2. Cập nhật bảng `IMAGES`.
 3. Chạy `yarn figma:export`.
 
-Script tự nén ảnh sang webp, tạo lại `public/images/Common/og.jpg`, `apple-touch-icon.png` và `app/icon.png`.
+Script tự nén ảnh sang webp và tạo lại `public/images/Common/og.jpg`.
+
+Favicon được tạo từ biểu tượng R trong logo vuông "Logo RIWAY MEDIA GROUP-01" trên Figma (hằng `FAVICON_SOURCE` trong script). Script cắt lấy phần biểu tượng rồi xuất ra `public/favicon.ico` (16/32/48px), `icon-192.png`, `icon-512.png` và `apple-touch-icon.png`. Web manifest nằm ở `app/manifest.ts`.
 
 ## Font
 
