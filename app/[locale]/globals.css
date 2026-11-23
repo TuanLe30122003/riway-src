@@ -152,8 +152,6 @@
     rgb(5 13 16 / 0.8) 72%,
     rgb(0 155 212 / 0.8) 100%
   );
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
 }
 
 @utility card-highlight {

@@ -1,30 +1,17 @@
 import CountUp from "@/components/Animation/CountUp";
 import FloatingImage from "@/components/Animation/FloatingImage";
 import GlowBlob from "@/components/Animation/GlowBlob";
-import Reveal, { StaggerGroup, StaggerItem } from "@/components/Animation/Reveal";
+import Reveal, { StaggerGroup } from "@/components/Animation/Reveal";
 import TextReveal from "@/components/Animation/TextReveal";
 import { YoutubeIcon } from "@/components/Common/BrandIcons";
 import Container from "@/components/Common/Container";
 import SectionHeading from "@/components/Common/SectionHeading";
-import { cn } from "@/lib/utils";
+import StatCard from "@/components/Home/About/StatCard";
 import { Calendar, Eye } from "lucide-react";
 import { useTranslations } from "next-intl";
-import type { ReactNode } from "react";
 
 const STATS = { channels: 30, years: 3, views: 100 };
 
-function StatCard({ children, className }: { children: ReactNode; className?: string }) {
-  return (
-    <StaggerItem
-      className={cn(
-        "card-stat group flex flex-col items-center justify-center rounded-[14px] px-4 text-center transition-[transform,box-shadow] duration-500 hover:-translate-y-1.5 hover:shadow-[0_20px_50px_-20px_rgba(251,186,63,0.55)]",
-        className,
-      )}
-    >
-      {children}
-    </StaggerItem>
-  );
-}
 
 export default function About() {
   const t = useTranslations("HomePage.about");
@@ -70,29 +57,28 @@ export default function About() {
               </span>
             </Reveal>
             <StaggerGroup className="mt-6 grid grid-cols-2 gap-3 md:mt-[31px] md:gap-6" stagger={0.15}>
-              <StatCard className="h-[150px] md:h-[182px]">
-                <CountUp to={STATS.channels} suffix="+" className="font-heading text-[42px] leading-none font-semibold text-gold md:text-[60px]" />
-                <span className="mt-3 flex items-center gap-2 text-sm font-semibold text-white md:mt-4 md:text-xl">
-                  <YoutubeIcon className="size-5 shrink-0 md:size-[23px]" />
-                  {t("channels")}
-                </span>
-              </StatCard>
-              <StatCard className="h-[150px] md:h-[182px]">
-                <CountUp to={STATS.years} suffix="+" className="font-heading text-[42px] leading-none font-semibold text-gold md:text-[60px]" />
-                <span className="mt-3 flex items-center gap-2 text-sm font-semibold text-white md:mt-4 md:text-xl">
-                  <Calendar className="size-5 shrink-0 md:size-[22px]" strokeWidth={1.6} />
-                  {t("years")}
-                </span>
-              </StatCard>
-              <StatCard className="col-span-2 h-[140px] md:h-[169px]">
-                <p className="font-heading text-[28px] leading-tight font-semibold text-gold sm:text-[36px] md:text-[48px]">
-                  {t.rich("views", { count: () => <CountUp to={STATS.views} /> })}
-                </p>
-                <span className="mt-3 flex items-center gap-2 text-sm font-semibold text-white md:text-xl">
-                  <Eye className="size-5 shrink-0 md:size-6" strokeWidth={1.6} />
-                  {t("viewsLabel")}
-                </span>
-              </StatCard>
+              <StatCard
+                className="h-[150px] md:h-[182px]"
+                value={<CountUp to={STATS.channels} suffix="+" className="text-[42px] md:text-[60px]" />}
+                icon={<YoutubeIcon />}
+                label={t("channels")}
+              />
+              <StatCard
+                className="h-[150px] md:h-[182px]"
+                value={<CountUp to={STATS.years} suffix="+" className="text-[42px] md:text-[60px]" />}
+                icon={<Calendar strokeWidth={1.6} />}
+                label={t("years")}
+              />
+              <StatCard
+                className="col-span-2 h-[140px] md:h-[169px]"
+                value={
+                  <span className="text-[28px] sm:text-[36px] md:text-[48px]">
+                    {t.rich("views", { count: () => <CountUp to={STATS.views} /> })}
+                  </span>
+                }
+                icon={<Eye strokeWidth={1.6} />}
+                label={t("viewsLabel")}
+              />
             </StaggerGroup>
           </div>
         </div>
