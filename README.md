@@ -34,7 +34,7 @@ Mở http://localhost:3000. Trang gốc sẽ tự chuyển sang `/en`.
 
 | Biến | Ý nghĩa |
 | --- | --- |
-| `NEXT_PUBLIC_SITE_URL` | Domain chính thức, dùng cho canonical, hreflang, Open Graph, sitemap và robots |
+| `NEXT_PUBLIC_SITE_URL` | Domain chính thức, dùng cho canonical, hreflang, Open Graph, sitemap và robots. Để trống thì trên Vercel tự dùng domain production của project (`VERCEL_PROJECT_PRODUCTION_URL`) |
 | `FIGMA_TOKEN` | Personal access token của Figma (scope `file_content:read`). Chỉ cần khi chạy `yarn figma:export` |
 | `FIGMA_FILE_KEY` | Mặc định là file Riway |
 
@@ -56,6 +56,10 @@ scripts/figma-export.mjs   tải ảnh từ Figma, nén sang webp, tạo og.jpg 
 ```
 
 Mỗi section nằm trong thư mục riêng `components/<Trang>/<Section>/<Section>.tsx` và dùng default export, giống adwin-src.
+
+## Deploy
+
+Project được deploy trên Vercel và nối với repo GitHub này: push lên `main` sẽ deploy production, push nhánh khác sẽ tạo bản preview.
 
 ## Ảnh từ Figma
 
