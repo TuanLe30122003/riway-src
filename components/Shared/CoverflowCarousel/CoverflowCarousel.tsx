@@ -158,7 +158,7 @@ export default function CoverflowCarousel({
           const soft = smoothstep(0.3, 1, away);
           card.style.transform = `translate(${shift.toFixed(2)}px,0) scale(${(1 - shrink * near).toFixed(4)})`;
           card.style.setProperty("--dim", (0.6 * smoothstep(0.15, 1, away) + 0.1 * far).toFixed(3));
-          card.style.setProperty("--blur", `${(4 * soft + far).toFixed(2)}px`);
+          card.style.setProperty("--blur", `${(2 * soft + 0.5 * far).toFixed(2)}px`);
           const slide = slides.current[slideIndex];
           if (slide) slide.style.zIndex = String(100 - Math.round(away * 10));
         });
