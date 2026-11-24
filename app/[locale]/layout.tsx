@@ -1,6 +1,7 @@
 import SmoothScroll from "@/components/Animation/SmoothScroll";
 import Footer from "@/components/Common/Footer";
 import Header from "@/components/Common/Header";
+import MotionDebug from "@/components/Common/MotionDebug";
 import { CONTACT_INFO } from "@/constants/navigation";
 import { routing } from "@/i18n/routing";
 import { fontBody, fontHeading } from "@/lib/fonts";
@@ -81,6 +82,7 @@ export default async function LocaleLayout({ children, params }: Props) {
             <Header />
             <main className="relative overflow-x-clip">{children}</main>
             <Footer />
+            <MotionDebug />
           </SmoothScroll>
         </NextIntlClientProvider>
       </body>
