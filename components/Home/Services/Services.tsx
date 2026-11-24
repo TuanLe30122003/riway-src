@@ -17,7 +17,7 @@ export default function Services() {
       <GlowBlob color="ocean" className="top-1/2 -right-24 h-[490px] w-[267px]" blur={240} opacity={0.3} />
       <Container className="relative">
         <SectionHeading title={t("title")} />
-        <div className="relative mx-auto max-w-[826px]">
+        <div className="relative mx-auto mt-10 max-w-[826px] md:mt-[61px]">
           <FloatingImage
             src="/images/Decor/script-3d.webp"
             alt=""
