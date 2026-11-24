@@ -1,5 +1,5 @@
 import { routing, type Locale } from "@/i18n/routing";
-import { SITE_NAME } from "@/lib/site";
+import { OG_IMAGE, SITE_NAME } from "@/lib/site";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
@@ -17,9 +17,11 @@ export async function buildMetadata(locale: Locale, page: PageKey): Promise<Meta
   const path = PATHS[page];
   const title = t(`${page}.title`);
   const description = t(`${page}.description`);
+  const shareTitle = page === "home" ? title : `${title} | ${SITE_NAME}`;
   const languages = Object.fromEntries(
     routing.locales.map((item) => [item, `/${item}${path}`]),
   );
+  const image = { url: OG_IMAGE, width: 1200, height: 630, type: "image/jpeg", alt: t("home.title") };
 
   return {
     title: page === "home" ? { absolute: title } : title,
@@ -31,18 +33,18 @@ export async function buildMetadata(locale: Locale, page: PageKey): Promise<Meta
     openGraph: {
       type: "website",
       siteName: SITE_NAME,
-      title,
+      title: shareTitle,
       description,
       url: `/${locale}${path}`,
       locale: OG_LOCALES[locale],
       alternateLocale: routing.locales.filter((item) => item !== locale).map((item) => OG_LOCALES[item]),
-      images: [{ url: "/images/Common/og.jpg", width: 1200, height: 630, alt: SITE_NAME }],
+      images: [image],
     },
     twitter: {
       card: "summary_large_image",
-      title,
+      title: shareTitle,
       description,
-      images: ["/images/Common/og.jpg"],
+      images: [image],
     },
   };
 }

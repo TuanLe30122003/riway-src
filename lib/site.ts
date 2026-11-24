@@ -9,3 +9,4 @@ export const SITE_URL = (
 ).replace(/\/$/, "");
 
 export const SITE_NAME = "RIWAY MEDIA GROUP";
+export const OG_IMAGE = "/images/Common/og-image.jpg";

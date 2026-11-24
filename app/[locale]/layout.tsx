@@ -5,7 +5,7 @@ import MotionDebug from "@/components/Common/MotionDebug";
 import { CONTACT_INFO } from "@/constants/navigation";
 import { routing } from "@/i18n/routing";
 import { fontBody, fontHeading } from "@/lib/fonts";
-import { SITE_NAME, SITE_URL } from "@/lib/site";
+import { OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/site";
 import type { Metadata, Viewport } from "next";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -31,6 +31,12 @@ export async function generateMetadata({ params }: Omit<Props, "children">): Pro
     title: { default: t("home.title"), template: `%s | ${SITE_NAME}` },
     description: t("home.description"),
     applicationName: SITE_NAME,
+    publisher: SITE_NAME,
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
+    },
     icons: {
       icon: [
         { url: "/favicon.ico", sizes: "16x16 32x32 48x48" },
@@ -53,21 +59,38 @@ export default async function LocaleLayout({ children, params }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations({ locale, namespace: "Footer" });
-  const organization = {
+  const tMeta = await getTranslations({ locale, namespace: "Metadata" });
+  const organizationId = `${SITE_URL}/#organization`;
+  const structuredData = {
     "@context": "https://schema.org",
-    "@type": "Organization",
-    name: SITE_NAME,
-    url: `${SITE_URL}/${locale}`,
-    logo: `${SITE_URL}/images/Common/logo-footer.webp`,
-    email: CONTACT_INFO.email,
-    telephone: CONTACT_INFO.phone,
-    description: t("description"),
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: "LK4-03 Doc Bun 1, Ha Dong",
-      addressLocality: "Hanoi",
-      addressCountry: "VN",
-    },
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": organizationId,
+        name: SITE_NAME,
+        url: `${SITE_URL}/${locale}`,
+        logo: { "@type": "ImageObject", url: `${SITE_URL}/icon-512.png`, width: 512, height: 512 },
+        image: `${SITE_URL}${OG_IMAGE}`,
+        email: CONTACT_INFO.email,
+        telephone: CONTACT_INFO.phone,
+        description: t("description"),
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: "LK4-03 Doc Bun 1, Ha Dong",
+          addressLocality: "Hanoi",
+          addressCountry: "VN",
+        },
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${SITE_URL}/#website`,
+        name: SITE_NAME,
+        url: `${SITE_URL}/${locale}`,
+        description: tMeta("home.description"),
+        inLanguage: locale,
+        publisher: { "@id": organizationId },
+      },
+    ],
   };
 
   return (
@@ -76,7 +99,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organization) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
         <NextIntlClientProvider>
           <SmoothScroll>

@@ -30,6 +30,7 @@ Mở http://localhost:3000. Trang gốc sẽ tự chuyển sang `/en`.
 | `yarn typecheck` | Kiểm tra TypeScript |
 | `yarn figma:export` | Tải lại ảnh từ Figma (poster, ảnh 3D, banner) vào `public/images` |
 | `yarn brand:assets <thư mục>` | Tạo logo header/footer, favicon, logo đối tác và ảnh OG từ bộ nhận diện |
+| `yarn og:image` | Chỉ tạo lại ảnh preview khi chia sẻ link (`public/images/Common/og-image.jpg`) |
 
 ## Biến môi trường
 
@@ -53,7 +54,9 @@ components/Shared/         CoverflowCarousel, PosterCarousel, Partners, ContactS
 constants/                 menu, danh sách poster, logo đối tác
 i18n/                      routing, request, navigation (next-intl)
 messages/en.json, vi.json  toàn bộ nội dung chữ và metadata SEO
-scripts/figma-export.mjs   tải ảnh từ Figma, nén sang webp, tạo og.jpg và icon
+scripts/figma-export.mjs   tải ảnh từ Figma, nén sang webp
+scripts/brand-assets.mjs   logo, favicon, logo đối tác từ bộ nhận diện
+scripts/og-image.mjs       ảnh preview 1200×630 khi chia sẻ link
 ```
 
 Mỗi section nằm trong thư mục riêng `components/<Trang>/<Section>/<Section>.tsx` và dùng default export, giống adwin-src.
@@ -90,7 +93,7 @@ Lấy từ bộ nhận diện gốc (zip "Bộ Nhận Diện RIWAY" và "Logo đ
 Sau đó chạy `yarn brand:assets <thư mục>`. Script sẽ:
 - Lấy logo trắng `-08` cho header và logo màu `-06` cho footer.
 - Cắt biểu tượng R từ `-01` để tạo `public/favicon.ico` (16/32/48px), `icon-192.png`, `icon-512.png` và `apple-touch-icon.png`.
-- Xén phần nền trắng thừa của logo đối tác, xuất ra `public/images/Partners/partner-XX.webp`, rồi tạo lại `og.jpg`.
+- Xén phần nền trắng thừa của logo đối tác, xuất ra `public/images/Partners/partner-XX.webp`, rồi tạo lại ảnh preview `og-image.jpg`.
 
 Tên đối tác hiển thị (alt) khai báo trong `constants/partners.ts` theo đúng thứ tự file. Web manifest nằm ở `app/manifest.ts`.
 

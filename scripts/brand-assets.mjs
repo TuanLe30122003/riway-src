@@ -2,6 +2,7 @@ import { mkdir, readdir, rm, writeFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
+import { buildOgImage } from "./og-image.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const PUBLIC_DIR = join(ROOT, "public");
@@ -127,20 +128,6 @@ async function buildPartners(partnerDir) {
     }),
   );
   console.log(`partners: ${files.length} logos saved to public/images/Partners`);
-}
-
-async function buildOgImage() {
-  const background = await sharp(join(IMAGE_DIR, "Posters/poster-07.webp"))
-    .resize(1200, 630, { fit: "cover" })
-    .modulate({ brightness: 0.35 })
-    .blur(2)
-    .toBuffer();
-  const logoLayer = await sharp(join(IMAGE_DIR, "Common/logo-footer.webp")).resize({ width: 620 }).toBuffer();
-  await sharp(background)
-    .composite([{ input: logoLayer, gravity: "center" }])
-    .jpeg({ quality: 85 })
-    .toFile(join(IMAGE_DIR, "Common/og.jpg"));
-  console.log("og: og.jpg");
 }
 
 async function main() {
