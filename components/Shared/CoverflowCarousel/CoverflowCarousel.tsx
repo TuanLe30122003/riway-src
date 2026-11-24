@@ -76,6 +76,10 @@ const VARIANTS: Record<CoverflowVariant, VariantConfig> = {
 
 const DESKTOP = "(min-width: 768px)";
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
+const smoothstep = (edge0: number, edge1: number, value: number) => {
+  const x = clamp((value - edge0) / (edge1 - edge0), 0, 1);
+  return x * x * (3 - 2 * x);
+};
 
 export default function CoverflowCarousel({
   posters,
@@ -115,10 +119,12 @@ export default function CoverflowCarousel({
 
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align, skipSnaps: false }, plugins);
   const cards = useRef<HTMLElement[]>([]);
+  const slides = useRef<HTMLElement[]>([]);
   const slot = useRef(0);
 
   const measure = useCallback((api: EmblaCarouselType) => {
-    cards.current = api.slideNodes().map((slide) => slide.querySelector<HTMLElement>("[data-coverflow-card]")!);
+    slides.current = api.slideNodes();
+    cards.current = slides.current.map((slide) => slide.querySelector<HTMLElement>("[data-coverflow-card]")!);
     slot.current = cards.current[0]?.offsetWidth ?? 0;
   }, []);
 
@@ -149,10 +155,12 @@ export default function CoverflowCarousel({
           const far = clamp(away - 1, 0, 1);
           const pull = away <= 1 ? (away * away) / 2 : away - 0.5;
           const shift = -Math.sign(distance) * slot.current * shrink * pull;
-          card.style.transform = `translate3d(${shift.toFixed(2)}px,0,0) scale(${(1 - shrink * near).toFixed(4)})`;
-          card.style.zIndex = String(100 - Math.round(away * 10));
-          card.style.setProperty("--dim", (0.6 * near + 0.1 * far).toFixed(3));
-          card.style.setProperty("--blur", `${(4 * near + far).toFixed(2)}px`);
+          const soft = smoothstep(0.3, 1, away);
+          card.style.transform = `translate(${shift.toFixed(2)}px,0) scale(${(1 - shrink * near).toFixed(4)})`;
+          card.style.setProperty("--dim", (0.6 * smoothstep(0.15, 1, away) + 0.1 * far).toFixed(3));
+          card.style.setProperty("--blur", `${(4 * soft + far).toFixed(2)}px`);
+          const slide = slides.current[slideIndex];
+          if (slide) slide.style.zIndex = String(100 - Math.round(away * 10));
         });
       });
     },
@@ -215,7 +223,7 @@ export default function CoverflowCarousel({
       aria-label={label}
     >
       {prev}
-      <StaggerGroup className="relative min-w-0 flex-1" stagger={0.08} y={50}>
+      <StaggerGroup className="relative min-w-0 flex-1" stagger={0.08} y={50} order="visual">
         <div
           ref={emblaRef}
           style={viewportStyle}
@@ -231,7 +239,7 @@ export default function CoverflowCarousel({
                   <div
                     data-coverflow-card
                     className={cn(
-                      "group relative overflow-hidden bg-ink-deep will-change-transform [--blur:0px] [--dim:0.6]",
+                      "group relative overflow-hidden bg-ink-deep [--blur:0px] [--dim:0.6]",
                       config.frame,
                       config.radius,
                     )}

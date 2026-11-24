@@ -1,6 +1,6 @@
 "use client";
 
-import { gsap, MOTION_OK, MOTION_REDUCED, useGSAP } from "@/lib/gsap";
+import { gsap, MOTION_OK, MOTION_REDUCED, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { useRef, type ElementType, type ReactNode } from "react";
 
 type Tag = "div" | "section" | "li" | "p" | "span" | "article" | "ul" | "ol";
@@ -73,6 +73,7 @@ export function StaggerGroup({
   x = 0,
   y = 36,
   start = "top 85%",
+  order = "dom",
   as = "div",
 }: {
   children: ReactNode;
@@ -81,6 +82,7 @@ export function StaggerGroup({
   x?: number;
   y?: number;
   start?: string;
+  order?: "dom" | "visual";
   as?: Tag;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -93,6 +95,25 @@ export function StaggerGroup({
       const items = el.querySelectorAll<HTMLElement>("[data-reveal-item]");
       const mm = gsap.matchMedia();
       mm.add(MOTION_OK, () => {
+        if (order === "visual") {
+          gsap.set(items, { autoAlpha: 0, x, y });
+          let frame = 0;
+          const show = () => {
+            frame = requestAnimationFrame(() => {
+              const box = el.getBoundingClientRect();
+              const placed = Array.from(items, (item) => ({ item, rect: item.getBoundingClientRect() }));
+              const inView = placed
+                .filter(({ rect }) => rect.right > box.left && rect.left < box.right)
+                .sort((a, b) => a.rect.left - b.rect.left)
+                .map(({ item }) => item);
+              const offView = placed.map(({ item }) => item).filter((item) => !inView.includes(item));
+              gsap.set(offView, { autoAlpha: 1, x: 0, y: 0 });
+              gsap.to(inView, { autoAlpha: 1, x: 0, y: 0, duration: 0.9, ease: "expo.out", stagger });
+            });
+          };
+          ScrollTrigger.create({ trigger: el, start, once: true, onEnter: show });
+          return () => cancelAnimationFrame(frame);
+        }
         gsap.fromTo(
           items,
           { autoAlpha: 0, x, y },
