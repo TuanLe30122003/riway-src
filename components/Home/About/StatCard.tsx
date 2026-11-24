@@ -1,8 +1,6 @@
 "use client";
 
-import { staggerItem } from "@/components/Animation/Reveal";
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
 import { useRef, type PointerEvent, type ReactNode } from "react";
 
 export default function StatCard({
@@ -27,7 +25,7 @@ export default function StatCard({
   };
 
   return (
-    <motion.div variants={staggerItem} onPointerMove={trackPointer} className={cn("group relative", className)}>
+    <div data-reveal-item onPointerMove={trackPointer} className={cn("group relative", className)}>
       <span
         aria-hidden
         className="pointer-events-none absolute inset-x-6 top-6 -bottom-2 rounded-[14px] bg-gradient-to-br from-gold/60 to-ocean/60 opacity-0 blur-2xl transition-opacity duration-700 ease-out-expo group-hover:opacity-70"
@@ -58,6 +56,6 @@ export default function StatCard({
           {label}
         </p>
       </div>
-    </motion.div>
+    </div>
   );
 }

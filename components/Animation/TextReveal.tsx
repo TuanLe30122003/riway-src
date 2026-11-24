@@ -1,57 +1,42 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { motion, type Variants } from "framer-motion";
-import { Fragment } from "react";
+import { gsap, MOTION_OK, MOTION_REDUCED, SplitText, useGSAP } from "@/lib/gsap";
+import { Fragment, useRef, type ElementType, type ReactNode } from "react";
 
-type Token = { word: string; highlight: boolean } | { lineBreak: true };
-
-function tokenize(text: string): Token[] {
-  const tokens: Token[] = [];
+function renderText(text: string, highlightClassName: string) {
   const parts = text.split(/(<hl>[\s\S]*?<\/hl>)/g).filter(Boolean);
-
-  for (const part of parts) {
+  const nodes: ReactNode[] = [];
+  parts.forEach((part, partIndex) => {
     const highlight = part.startsWith("<hl>");
     const content = highlight ? part.slice(4, -5) : part;
-    content.split(/(\n)/).forEach((segment) => {
-      if (segment === "\n") {
-        tokens.push({ lineBreak: true });
-        return;
-      }
-      segment
-        .split(/\s+/)
-        .filter(Boolean)
-        .forEach((word) => tokens.push({ word, highlight }));
+    const lines = content.split("\n");
+    lines.forEach((line, lineIndex) => {
+      if (lineIndex > 0) nodes.push(<br key={`br-${partIndex}-${lineIndex}`} />);
+      if (!line) return;
+      nodes.push(
+        highlight ? (
+          <span key={`hl-${partIndex}-${lineIndex}`} className={highlightClassName}>
+            {line}
+          </span>
+        ) : (
+          <Fragment key={`tx-${partIndex}-${lineIndex}`}>{line}</Fragment>
+        ),
+      );
     });
-  }
-
-  return tokens;
+  });
+  return nodes;
 }
-
-const container: Variants = {
-  hidden: {},
-  visible: ({ stagger, delay }: { stagger: number; delay: number }) => ({
-    transition: { staggerChildren: stagger, delayChildren: delay },
-  }),
-};
-
-const wordVariants: Variants = {
-  hidden: { y: "110%", opacity: 0 },
-  visible: {
-    y: "0%",
-    opacity: 1,
-    transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1] },
-  },
-};
 
 type TextRevealProps = {
   text: string;
   as?: "h1" | "h2" | "h3" | "p";
   className?: string;
   highlightClassName?: string;
+  by?: "words" | "chars";
   stagger?: number;
   delay?: number;
-  amount?: number;
+  start?: string;
   animateOnMount?: boolean;
 };
 
@@ -60,43 +45,54 @@ export default function TextReveal({
   as = "h2",
   className,
   highlightClassName = "text-gold",
-  stagger = 0.06,
+  by = "words",
+  stagger,
   delay = 0,
-  amount = 0.5,
+  start = "top 88%",
   animateOnMount = false,
 }: TextRevealProps) {
-  const Component = motion[as];
-  const tokens = tokenize(text);
-  const label = text.replace(/<\/?hl>/g, "").replace(/\n/g, " ");
-  const trigger = animateOnMount
-    ? { animate: "visible" as const }
-    : { whileInView: "visible" as const, viewport: { once: true, amount } };
+  const ref = useRef<HTMLHeadingElement>(null);
+  const Component: ElementType = as;
+
+  useGSAP(
+    () => {
+      const el = ref.current;
+      if (!el) return;
+      const mm = gsap.matchMedia();
+      mm.add(MOTION_OK, () => {
+        const split = SplitText.create(el, {
+          type: by === "chars" ? "words,chars" : "words",
+          mask: "words",
+          wordsClass: "split-word",
+          charsClass: "split-char",
+          autoSplit: true,
+          onSplit(self) {
+            gsap.set(el, { autoAlpha: 1 });
+            const targets = by === "chars" ? self.chars : self.words;
+            return gsap.from(targets, {
+              yPercent: 115,
+              rotate: by === "chars" ? 6 : 3,
+              autoAlpha: 0,
+              duration: by === "chars" ? 1.1 : 1,
+              ease: "expo.out",
+              stagger: stagger ?? (by === "chars" ? 0.025 : 0.06),
+              delay,
+              scrollTrigger: animateOnMount ? undefined : { trigger: el, start, once: true },
+            });
+          },
+        });
+        return () => split.revert();
+      });
+      mm.add(MOTION_REDUCED, () => {
+        gsap.set(el, { autoAlpha: 1 });
+      });
+    },
+    { scope: ref, dependencies: [text] },
+  );
 
   return (
-    <Component
-      className={className}
-      aria-label={label}
-      variants={container}
-      custom={{ stagger, delay }}
-      initial="hidden"
-      {...trigger}
-    >
-      {tokens.map((token, index) =>
-        "lineBreak" in token ? (
-          <br key={`br-${index}`} />
-        ) : (
-          <Fragment key={`${token.word}-${index}`}>
-            <span aria-hidden className="inline-flex overflow-hidden pb-[0.12em] align-bottom">
-              <motion.span
-                variants={wordVariants}
-                className={cn("inline-block", token.highlight && highlightClassName)}
-              >
-                {token.word}
-              </motion.span>
-            </span>{" "}
-          </Fragment>
-        ),
-      )}
+    <Component ref={ref} data-reveal className={cn(className)}>
+      {renderText(text, highlightClassName)}
     </Component>
   );
 }

@@ -1,9 +1,9 @@
 "use client";
 
-import { motion, type Variants } from "framer-motion";
-import type { ReactNode } from "react";
+import { gsap, MOTION_OK, MOTION_REDUCED, useGSAP } from "@/lib/gsap";
+import { useRef, type ElementType, type ReactNode } from "react";
 
-const EASE = [0.22, 1, 0.36, 1] as const;
+type Tag = "div" | "section" | "li" | "p" | "span" | "article" | "ul" | "ol";
 
 type RevealProps = {
   children: ReactNode;
@@ -13,72 +13,109 @@ type RevealProps = {
   x?: number;
   y?: number;
   scale?: number;
-  amount?: number;
-  as?: "div" | "section" | "li" | "p" | "span" | "article";
+  start?: string;
+  as?: Tag;
 };
 
 export default function Reveal({
   children,
   className,
   delay = 0,
-  duration = 0.8,
+  duration = 1.1,
   x = 0,
   y = 40,
   scale = 1,
-  amount = 0.3,
+  start = "top 88%",
   as = "div",
 }: RevealProps) {
-  const Component = motion[as];
+  const ref = useRef<HTMLDivElement>(null);
+  const Component = as as "div";
+
+  useGSAP(
+    () => {
+      const el = ref.current;
+      if (!el) return;
+      const mm = gsap.matchMedia();
+      mm.add(MOTION_OK, () => {
+        gsap.fromTo(
+          el,
+          { autoAlpha: 0, x, y, scale },
+          {
+            autoAlpha: 1,
+            x: 0,
+            y: 0,
+            scale: 1,
+            duration,
+            delay,
+            ease: "expo.out",
+            scrollTrigger: { trigger: el, start, once: true },
+          },
+        );
+      });
+      mm.add(MOTION_REDUCED, () => {
+        gsap.set(el, { autoAlpha: 1 });
+      });
+    },
+    { scope: ref },
+  );
 
   return (
-    <Component
-      className={className}
-      initial={{ opacity: 0, x, y, scale }}
-      whileInView={{ opacity: 1, x: 0, y: 0, scale: 1 }}
-      viewport={{ once: true, amount }}
-      transition={{ duration, delay, ease: EASE }}
-    >
+    <Component ref={ref} data-reveal className={className}>
       {children}
     </Component>
   );
 }
 
-const groupVariants: Variants = {
-  hidden: {},
-  visible: (stagger: number) => ({
-    transition: { staggerChildren: stagger },
-  }),
-};
-
-export const staggerItem: Variants = {
-  hidden: { opacity: 0, y: 36 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE } },
-};
-
 export function StaggerGroup({
   children,
   className,
   stagger = 0.12,
-  amount = 0.2,
+  x = 0,
+  y = 36,
+  start = "top 85%",
   as = "div",
 }: {
   children: ReactNode;
   className?: string;
   stagger?: number;
-  amount?: number;
-  as?: "div" | "ul" | "ol";
+  x?: number;
+  y?: number;
+  start?: string;
+  as?: Tag;
 }) {
-  const Component = motion[as];
+  const ref = useRef<HTMLDivElement>(null);
+  const Component = as as "div";
+
+  useGSAP(
+    () => {
+      const el = ref.current;
+      if (!el) return;
+      const items = el.querySelectorAll<HTMLElement>("[data-reveal-item]");
+      const mm = gsap.matchMedia();
+      mm.add(MOTION_OK, () => {
+        gsap.fromTo(
+          items,
+          { autoAlpha: 0, x, y },
+          {
+            autoAlpha: 1,
+            x: 0,
+            y: 0,
+            duration: 0.9,
+            ease: "expo.out",
+            stagger,
+            scrollTrigger: { trigger: el, start, once: true },
+          },
+        );
+      });
+      mm.add(MOTION_REDUCED, () => {
+        gsap.set(items, { autoAlpha: 1 });
+      });
+    },
+    { scope: ref },
+  );
 
   return (
-    <Component
-      className={className}
-      variants={groupVariants}
-      custom={stagger}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount }}
-    >
+    <Component ref={ref} className={className}>
       {children}
     </Component>
   );
@@ -87,18 +124,15 @@ export function StaggerGroup({
 export function StaggerItem({
   children,
   className,
-  variants = staggerItem,
   as = "div",
 }: {
   children: ReactNode;
   className?: string;
-  variants?: Variants;
-  as?: "div" | "li" | "article";
+  as?: Tag;
 }) {
-  const Component = motion[as];
-
+  const Component: ElementType = as;
   return (
-    <Component className={className} variants={variants}>
+    <Component data-reveal-item className={className}>
       {children}
     </Component>
   );

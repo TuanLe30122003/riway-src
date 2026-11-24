@@ -31,7 +31,9 @@ export default async function ExplorePage({ params }: Props) {
             label={categories(rail.category)}
             posters={rail.posters}
             variant={rail.variant}
-            delay={index * 0.05}
+            first={index === 0}
+            trackClass={rail.trackClass}
+            autoplayDelay={4200 + index * 700}
           />
         ))}
       </div>

@@ -1,48 +1,11 @@
 "use client";
 
-import {
-  motion,
-  useReducedMotion,
-  useScroll,
-  useTransform,
-  type MotionValue,
-} from "framer-motion";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import { cn } from "@/lib/utils";
+import { gsap, useGSAP } from "@/lib/gsap";
 import { useRef, type ReactNode } from "react";
 
-function StackCard({
-  children,
-  index,
-  total,
-  progress,
-}: {
-  children: ReactNode;
-  index: number;
-  total: number;
-  progress: MotionValue<number>;
-}) {
-  const start = index / total;
-  const targetScale = 1 - (total - 1 - index) * 0.05;
-  const scale = useTransform(progress, [start, 1], [1, targetScale]);
-  const dim = useTransform(progress, [start, Math.min(start + 1 / total, 1), 1], [0, 0.25, 0.45]);
-
-  return (
-    <div className="sticky top-0 flex h-[58vh] items-start justify-center pt-[16vh] md:h-[62vh] md:pt-[18vh]">
-      <motion.div
-        style={{ scale, top: index * 26 }}
-        className="relative w-full origin-top rounded-3xl will-change-transform"
-      >
-        {children}
-        {index < total - 1 && (
-          <motion.div
-            aria-hidden
-            style={{ opacity: dim }}
-            className="pointer-events-none absolute inset-0 rounded-[inherit] bg-ink"
-          />
-        )}
-      </motion.div>
-    </div>
-  );
-}
+const OFFSET = 22;
 
 export default function ScrollStack({
   items,
@@ -51,23 +14,71 @@ export default function ScrollStack({
   items: ReactNode[];
   className?: string;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const reduceMotion = useReducedMotion();
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end end"],
-  });
+  const reduceMotion = usePrefersReducedMotion();
+  const stageRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      const stage = stageRef.current;
+      if (!stage || reduceMotion) return;
+      const cards = gsap.utils.toArray<HTMLElement>("[data-stack-card]", stage);
+      const dims = gsap.utils.toArray<HTMLElement>("[data-stack-dim]", stage);
+      if (cards.length < 2) return;
+
+      gsap.set(cards, { transformOrigin: "50% 0%" });
+
+      const timeline = gsap.timeline({
+        defaults: { ease: "none", duration: 1 },
+        scrollTrigger: {
+          trigger: stage,
+          start: "top top+=140",
+          end: () => `+=${(cards.length - 1) * window.innerHeight * 0.85}`,
+          pin: true,
+          scrub: 1,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      cards.forEach((card, index) => {
+        if (index === 0) return;
+        const at = index - 1;
+        timeline.fromTo(card, { y: () => window.innerHeight }, { y: 0 }, at);
+        for (let previous = 0; previous < index; previous += 1) {
+          const depth = index - previous;
+          timeline.to(cards[previous], { scale: 1 - depth * 0.045, filter: `blur(${Math.min(depth * 1.5, 4)}px)` }, at);
+          timeline.to(dims[previous], { opacity: Math.min(depth * 0.25, 0.6) }, at);
+        }
+      });
+    },
+    { scope: stageRef, dependencies: [reduceMotion, items.length], revertOnUpdate: true },
+  );
 
   if (reduceMotion) {
-    return <div className={className}>{items.map((item, i) => <div key={i} className="mb-6">{item}</div>)}</div>;
+    return (
+      <div className={cn("flex flex-col gap-6", className)}>
+        {items.map((item, index) => (
+          <div key={index}>{item}</div>
+        ))}
+      </div>
+    );
   }
 
   return (
-    <div ref={ref} className={className}>
+    <div ref={stageRef} className={cn("relative grid", className)}>
       {items.map((item, index) => (
-        <StackCard key={index} index={index} total={items.length} progress={scrollYProgress}>
+        <div
+          key={index}
+          data-stack-card
+          className="relative [grid-area:1/1] will-change-transform"
+          style={{ marginTop: index * OFFSET, zIndex: index + 1 }}
+        >
           {item}
-        </StackCard>
+          <div
+            data-stack-dim
+            aria-hidden
+            className="pointer-events-none absolute inset-0 rounded-[20px] bg-ink opacity-0"
+          />
+        </div>
       ))}
     </div>
   );

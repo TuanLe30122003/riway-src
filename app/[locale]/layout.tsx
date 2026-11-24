@@ -73,6 +73,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   return (
     <html lang={locale} className={`${fontBody.variable} ${fontHeading.variable}`} suppressHydrationWarning>
       <body className="min-h-dvh bg-ink font-body text-white antialiased">
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organization) }}

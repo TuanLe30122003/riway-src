@@ -6,10 +6,10 @@ import { StaggerGroup, StaggerItem } from "@/components/Animation/Reveal";
 import { contactSchema, type ContactValues } from "@/lib/contact-schema";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AnimatePresence, motion } from "framer-motion";
+import { gsap, useGSAP } from "@/lib/gsap";
 import { CircleCheck, LoaderCircle, TriangleAlert } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
 const fieldClass =
@@ -18,6 +18,15 @@ const fieldClass =
 export default function ContactForm() {
   const t = useTranslations("ContactSection");
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
+  const statusRef = useRef<HTMLParagraphElement>(null);
+
+  useGSAP(
+    () => {
+      if (status === "idle" || !statusRef.current) return;
+      gsap.fromTo(statusRef.current, { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: "expo.out" });
+    },
+    { dependencies: [status] },
+  );
   const {
     register,
     handleSubmit,
@@ -48,7 +57,9 @@ export default function ContactForm() {
       <StaggerGroup className="flex flex-col gap-3 md:gap-[11px]" stagger={0.1}>
         <StaggerItem className="grid gap-3 sm:grid-cols-2 sm:gap-[13px]">
           <div>
-            <label htmlFor="contact-name" className="sr-only">{t("name")}</label>
+            <label htmlFor="contact-name" className="sr-only">
+              {t("name")}
+            </label>
             <input
               id="contact-name"
               type="text"
@@ -62,7 +73,9 @@ export default function ContactForm() {
             {errorText("name")}
           </div>
           <div>
-            <label htmlFor="contact-email" className="sr-only">{t("email")}</label>
+            <label htmlFor="contact-email" className="sr-only">
+              {t("email")}
+            </label>
             <input
               id="contact-email"
               type="email"
@@ -77,20 +90,31 @@ export default function ContactForm() {
           </div>
         </StaggerItem>
         <StaggerItem>
-          <label htmlFor="contact-message" className="sr-only">{t("message")}</label>
+          <label htmlFor="contact-message" className="sr-only">
+            {t("message")}
+          </label>
           <textarea
             id="contact-message"
             rows={7}
             placeholder={t("message")}
             aria-invalid={!!errors.message}
             aria-describedby={errors.message ? "message-error" : undefined}
-            className={cn(fieldClass, "min-h-[180px] resize-none rounded-[20px] py-3 md:min-h-[229px]", errors.message && "border-[#ff8a7a]")}
+            className={cn(
+              fieldClass,
+              "min-h-[180px] resize-none rounded-[20px] py-3 md:min-h-[229px]",
+              errors.message && "border-[#ff8a7a]",
+            )}
             {...register("message")}
           />
           {errorText("message")}
         </StaggerItem>
         <StaggerItem className="mt-2 flex flex-col items-center gap-3 md:mt-[7px]">
-          <CustomButton type="submit" variant="solid" disabled={isSubmitting} className="spin-border min-w-[240px] md:min-w-[274px]">
+          <CustomButton
+            type="submit"
+            variant="solid"
+            disabled={isSubmitting}
+            className="spin-border min-w-[240px] md:min-w-[274px]"
+          >
             {isSubmitting ? (
               <span className="inline-flex items-center gap-2">
                 <LoaderCircle className="size-4 animate-spin" />
@@ -100,24 +124,16 @@ export default function ContactForm() {
               t("submit")
             )}
           </CustomButton>
-          <AnimatePresence mode="wait">
-            {status !== "idle" && (
-              <motion.p
-                key={status}
-                role="status"
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                className={cn(
-                  "flex items-center gap-2 text-sm",
-                  status === "success" ? "text-sky" : "text-[#ff8a7a]",
-                )}
-              >
-                {status === "success" ? <CircleCheck className="size-4" /> : <TriangleAlert className="size-4" />}
-                {t(status)}
-              </motion.p>
-            )}
-          </AnimatePresence>
+          {status !== "idle" && (
+            <p
+              ref={statusRef}
+              role="status"
+              className={cn("flex items-center gap-2 text-sm", status === "success" ? "text-sky" : "text-[#ff8a7a]")}
+            >
+              {status === "success" ? <CircleCheck className="size-4" /> : <TriangleAlert className="size-4" />}
+              {t(status)}
+            </p>
+          )}
         </StaggerItem>
       </StaggerGroup>
     </form>

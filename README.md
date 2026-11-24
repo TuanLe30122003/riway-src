@@ -7,7 +7,7 @@ Website của RIWAY MEDIA GROUP, dựng theo thiết kế Figma `VLKz4IGevg4pQ3m
 - Next.js 15 (App Router), React 19, TypeScript
 - Tailwind CSS 4: token khai báo bằng `@theme` trong `app/[locale]/globals.css`
 - next-intl 4: hai ngôn ngữ `en` (mặc định) và `vi`, URL dạng `/[locale]/...`
-- framer-motion, lenis (smooth scroll), embla-carousel, react-fast-marquee
+- GSAP 3 (ScrollTrigger, SplitText) qua `@gsap/react`, khai báo trong `lib/gsap.ts`; lenis (smooth scroll, chạy theo `gsap.ticker`); embla-carousel
 - react-hook-form + zod cho form liên hệ
 
 ## Bắt đầu
@@ -28,7 +28,8 @@ Mở http://localhost:3000. Trang gốc sẽ tự chuyển sang `/en`.
 | `yarn build` / `yarn start` | Build và chạy bản production (các trang được render tĩnh) |
 | `yarn lint` | ESLint |
 | `yarn typecheck` | Kiểm tra TypeScript |
-| `yarn figma:export` | Tải lại ảnh từ Figma vào `public/images` |
+| `yarn figma:export` | Tải lại ảnh từ Figma (poster, ảnh 3D, banner) vào `public/images` |
+| `yarn brand:assets <thư mục>` | Tạo logo header/footer, favicon, logo đối tác và ảnh OG từ bộ nhận diện |
 
 ## Biến môi trường
 
@@ -48,7 +49,7 @@ components/Animation/      Reveal, TextReveal, FloatingImage, CountUp, ScrollSta
 components/Common/         Header, Footer, Container, LocaleSwitcher, CategoryPills, CustomButton, SectionHeading, ScrollToTop
 components/Home/           Hero, Services, GlobalPresence, About
 components/Explore/        CategoryRail
-components/Shared/         PosterCarousel, Partners, ContactSection, PageHero
+components/Shared/         CoverflowCarousel, PosterCarousel, Partners, ContactSection, PageHero
 constants/                 menu, danh sách poster, logo đối tác
 i18n/                      routing, request, navigation (next-intl)
 messages/en.json, vi.json  toàn bộ nội dung chữ và metadata SEO
@@ -56,6 +57,12 @@ scripts/figma-export.mjs   tải ảnh từ Figma, nén sang webp, tạo og.jpg 
 ```
 
 Mỗi section nằm trong thư mục riêng `components/<Trang>/<Section>/<Section>.tsx` và dùng default export, giống adwin-src.
+
+## Animation
+
+Toàn bộ animation dùng GSAP. Phần tử có `data-reveal` hoặc `data-reveal-item` bị ẩn bằng CSS (class `js` trên `<html>`) cho tới khi GSAP chạy, để tránh nháy khi tải trang. Mọi hiệu ứng đặt trong `gsap.matchMedia` nên khi người dùng bật giảm chuyển động (Reduce motion), nội dung hiện ngay mà không chạy animation. Mở `?debug=motion` để xem trạng thái này trên máy bất kỳ.
+
+`CoverflowCarousel` là carousel dùng chung cho trang chủ và Explore. Thẻ chính có kích thước đầy đủ; thẻ phụ được thu nhỏ, kéo sát lại để giữ khoảng cách cố định, đồng thời làm tối và blur theo khoảng cách tới thẻ chính.
 
 ## Deploy
 
@@ -69,18 +76,30 @@ Project được deploy trên Vercel và nối với repo GitHub này: push lên
 2. Cập nhật bảng `IMAGES`.
 3. Chạy `yarn figma:export`.
 
-Script tự nén ảnh sang webp và tạo lại `public/images/Common/og.jpg`.
+Script tự nén ảnh sang webp.
 
-Favicon được tạo từ biểu tượng R trong logo vuông "Logo RIWAY MEDIA GROUP-01" trên Figma (hằng `FAVICON_SOURCE` trong script). Script cắt lấy phần biểu tượng rồi xuất ra `public/favicon.ico` (16/32/48px), `icon-192.png`, `icon-512.png` và `apple-touch-icon.png`. Web manifest nằm ở `app/manifest.ts`.
+## Logo, favicon và logo đối tác
+
+Lấy từ bộ nhận diện gốc (zip "Bộ Nhận Diện RIWAY" và "Logo đối tác"), không lấy từ Figma. Giải nén vào một thư mục có cấu trúc như sau:
+
+```
+<thư mục>/logos/     Logo RIWAY MEDIA GROUP-01.png ... -10.png
+<thư mục>/partners/  1.png ... 15.png (logo đối tác, sắp theo số)
+```
+
+Sau đó chạy `yarn brand:assets <thư mục>`. Script sẽ:
+- Lấy logo trắng `-08` cho header và logo màu `-06` cho footer.
+- Cắt biểu tượng R từ `-01` để tạo `public/favicon.ico` (16/32/48px), `icon-192.png`, `icon-512.png` và `apple-touch-icon.png`.
+- Xén phần nền trắng thừa của logo đối tác, xuất ra `public/images/Partners/partner-XX.webp`, rồi tạo lại `og.jpg`.
+
+Tên đối tác hiển thị (alt) khai báo trong `constants/partners.ts` theo đúng thứ tự file. Web manifest nằm ở `app/manifest.ts`.
 
 ## Font
 
-Thiết kế dùng **ABC Solar Display** cho tiêu đề và **Inter** cho nội dung. Hiện tại Lexend đang tạm thay cho ABC Solar Display. Khi có file font bản quyền:
-
-1. Chép file `.woff2` vào `app/fonts/`.
-2. Trong `lib/fonts.ts`, đổi `Lexend` thành `localFont({ src: [...], variable: "--font-lexend" })`.
-
-Mọi chỗ dùng class `font-heading` sẽ tự nhận font mới.
+- Tiêu đề dùng **ABC Solar Display** (Light, Regular, Medium, Semibold, Bold); nội dung dùng **Inter Variable**. Cả hai lấy từ bộ font thiết kế gửi.
+- File woff2 nằm trong `app/fonts/`. Font đã được cắt (subset) chỉ giữ ký tự Latin và tiếng Việt bằng `pyftsubset` (fontTools), mỗi file khoảng 55–80KB.
+- `lib/fonts.ts` nạp font bằng `next/font/local` và gán vào biến `--font-solar` / `--font-inter`; trong CSS dùng class `font-heading` / `font-body`.
+- ABC Solar Display là font thương mại của Dinamo. Cần có license web hợp lệ trước khi public.
 
 ## Form liên hệ
 

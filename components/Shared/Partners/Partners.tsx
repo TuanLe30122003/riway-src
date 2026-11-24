@@ -22,6 +22,7 @@ export default function Partners() {
               direction={rowIndex % 2 === 0 ? "left" : "right"}
               speed={rowIndex % 2 === 0 ? 38 : 32}
               pauseOnHover
+              copies={3}
             >
               {row.map((partner) => (
                 <div

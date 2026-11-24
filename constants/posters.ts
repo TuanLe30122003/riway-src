@@ -4,8 +4,6 @@ const poster = (index: number) =>
 const vertical = (index: number) =>
   `/images/Posters/vertical-${String(index).padStart(2, "0")}.webp`;
 
-export const POSTERS = Array.from({ length: 25 }, (_, i) => poster(i + 1));
-
 export const HERO_WALL_ROWS = [
   [1, 2, 3, 4, 5, 6, 7, 8],
   [9, 10, 11, 12, 13, 14, 15, 16],
@@ -13,25 +11,31 @@ export const HERO_WALL_ROWS = [
   [5, 25, 13, 2, 21, 9, 17, 6],
 ].map((row) => row.map(poster));
 
+const TV_SERIES = [6, 15, 10, 11, 12, 13, 8, 22, 24, 18, 20, 9, 2, 17, 21, 7, 23, 14].map(poster);
+const ANIME = [3, 16, 25, 4, 1, 5, 19].map(poster);
+const MUSIC = [12, 22, 13, 8, 24, 18, 15, 20, 11].map(poster);
+const VERTICAL = [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4].map(vertical);
+
 export const POSTER_CATEGORIES = ["tvSeries", "music", "anime", "verticalDrama"] as const;
 
 export type PosterCategory = (typeof POSTER_CATEGORIES)[number];
 
 export const POSTERS_BY_CATEGORY: Record<PosterCategory, string[]> = {
-  tvSeries: [21, 9, 6, 13, 18, 11, 23, 15, 2].map(poster),
-  music: [1, 10, 22, 7, 14, 19, 5, 24, 12].map(poster),
-  anime: [3, 16, 25, 4, 8, 17, 20, 13, 9].map(poster),
-  verticalDrama: [6, 15, 2, 23, 11, 18, 21, 7, 14].map(poster),
+  tvSeries: TV_SERIES,
+  music: MUSIC,
+  anime: ANIME,
+  verticalDrama: VERTICAL,
 };
 
 export type RailVariant = "landscape" | "portrait";
 
-export const EXPLORE_RAILS: { category: PosterCategory; variant: RailVariant; posters: string[] }[] = [
-  { category: "tvSeries", variant: "landscape", posters: POSTERS_BY_CATEGORY.tvSeries },
-  { category: "anime", variant: "landscape", posters: POSTERS_BY_CATEGORY.anime },
-  {
-    category: "verticalDrama",
-    variant: "portrait",
-    posters: [1, 2, 3, 4, 1, 2, 3, 4].map(vertical),
-  },
+export const EXPLORE_RAILS: {
+  category: PosterCategory;
+  variant: RailVariant;
+  posters: string[];
+  trackClass: string;
+}[] = [
+  { category: "tvSeries", variant: "landscape", posters: TV_SERIES, trackClass: "mt-8 md:mt-20" },
+  { category: "anime", variant: "landscape", posters: ANIME, trackClass: "mt-8 md:mt-16" },
+  { category: "verticalDrama", variant: "portrait", posters: VERTICAL, trackClass: "mt-8 md:mt-14" },
 ];

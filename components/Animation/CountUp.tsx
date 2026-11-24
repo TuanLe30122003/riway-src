@@ -1,13 +1,13 @@
 "use client";
 
-import { animate, useInView, useReducedMotion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { gsap, MOTION_OK, useGSAP } from "@/lib/gsap";
+import { useRef } from "react";
 
 export default function CountUp({
   to,
   prefix = "",
   suffix = "",
-  duration = 1.8,
+  duration = 2,
   className,
 }: {
   to: number;
@@ -17,28 +17,37 @@ export default function CountUp({
   className?: string;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, amount: 0.6 });
-  const reduceMotion = useReducedMotion();
-  const [value, setValue] = useState(0);
 
-  useEffect(() => {
-    if (!inView) return;
-    if (reduceMotion) {
-      setValue(to);
-      return;
-    }
-    const controls = animate(0, to, {
-      duration,
-      ease: [0.16, 1, 0.3, 1],
-      onUpdate: (latest) => setValue(Math.round(latest)),
-    });
-    return () => controls.stop();
-  }, [inView, reduceMotion, to, duration]);
+  useGSAP(
+    () => {
+      const el = ref.current;
+      if (!el) return;
+      const mm = gsap.matchMedia();
+      mm.add(MOTION_OK, () => {
+        const state = { value: 0 };
+        const render = () => {
+          el.textContent = `${prefix}${Math.round(state.value)}${suffix}`;
+        };
+        render();
+        gsap.to(state, {
+          value: to,
+          duration,
+          ease: "power3.out",
+          onUpdate: render,
+          scrollTrigger: { trigger: el, start: "top 90%", once: true },
+        });
+        return () => {
+          el.textContent = `${prefix}${to}${suffix}`;
+        };
+      });
+    },
+    { scope: ref, dependencies: [to] },
+  );
 
   return (
     <span ref={ref} className={className}>
       {prefix}
-      {value}
+      {to}
       {suffix}
     </span>
   );
