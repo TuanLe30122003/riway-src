@@ -31,6 +31,7 @@ Mở http://localhost:3000. Trang gốc sẽ tự chuyển sang `/en`.
 | `yarn figma:export` | Tải lại ảnh từ Figma (poster, ảnh 3D, banner) vào `public/images` |
 | `yarn brand:assets <thư mục>` | Tạo logo header/footer, favicon, logo đối tác và ảnh OG từ bộ nhận diện |
 | `yarn og:image` | Chỉ tạo lại ảnh preview khi chia sẻ link (`public/images/Common/og-image.jpg`) |
+| `yarn music:thumbs <thư mục>` | Tạo lại ảnh mục Âm nhạc (`public/images/Music/music-XX.webp`) từ thư mục ảnh gốc, xếp theo số đầu tên file. Sau đó sửa `MUSIC_COUNT` trong `constants/posters.ts` cho khớp số ảnh |
 
 ## Biến môi trường
 
@@ -60,6 +61,7 @@ messages/en.json, vi.json  toàn bộ nội dung chữ và metadata SEO
 scripts/figma-export.mjs   tải ảnh từ Figma, nén sang webp
 scripts/brand-assets.mjs   logo, favicon, logo đối tác từ bộ nhận diện
 scripts/og-image.mjs       ảnh preview 1200×630 khi chia sẻ link
+scripts/music-thumbs.mjs   ảnh mục Âm nhạc theo thứ tự đánh số
 ```
 
 Mỗi section nằm trong thư mục riêng `components/<Trang>/<Section>/<Section>.tsx` và dùng default export, giống adwin-src.

@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "figma:export": "node --env-file-if-exists=.env.local scripts/figma-export.mjs",
     "brand:assets": "node scripts/brand-assets.mjs",
-    "og:image": "node scripts/og-image.mjs"
+    "og:image": "node scripts/og-image.mjs",
+    "music:thumbs": "node scripts/music-thumbs.mjs"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
