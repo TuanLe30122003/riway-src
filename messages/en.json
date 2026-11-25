@@ -11,6 +11,7 @@
   },
   "Common": {
     "nav": {
+      "home": "Home",
       "explore": "Explore",
       "contact": "Contact for Partnership"
     },

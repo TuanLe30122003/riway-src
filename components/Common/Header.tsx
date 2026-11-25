@@ -131,9 +131,15 @@ export default function Header() {
   const hrefOf = (item: NavItem) => ("hash" in item ? { pathname: item.href, hash: item.hash } : item.href);
 
   const onNavigate = (event: MouseEvent<HTMLAnchorElement>, item: NavItem) => {
-    if (!("hash" in item) || pathname !== item.href) return;
+    if (pathname !== item.href) return;
     event.preventDefault();
     setMenuOpen(false);
+    if (!("hash" in item)) {
+      if (lenis) lenis.scrollTo(0, { duration: 1.4 });
+      else window.scrollTo({ top: 0, behavior: "smooth" });
+      if (window.location.hash) window.history.replaceState(null, "", window.location.pathname);
+      return;
+    }
     const target = document.getElementById(item.hash);
     if (!target) return;
     if (lenis) lenis.scrollTo(target, { offset: -80, duration: 1.4 });

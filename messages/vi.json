@@ -11,6 +11,7 @@
   },
   "Common": {
     "nav": {
+      "home": "Trang chủ",
       "explore": "Khám phá",
       "contact": "Liên hệ hợp tác"
     },

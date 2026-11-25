@@ -1,4 +1,5 @@
 export const NAV_ITEMS = [
+  { key: "home", href: "/" },
   { key: "explore", href: "/explore" },
   { key: "contact", href: "/", hash: "contact" },
 ] as const;
