@@ -11,7 +11,7 @@ export const HERO_WALL_ROWS = [
   [5, 25, 13, 2, 21, 9, 17, 6],
 ].map((row) => row.map(poster));
 
-const TV_SERIES = [6, 15, 10, 11, 12, 13, 8, 22, 24, 18, 20, 9, 2, 17, 21, 7, 23, 14].map(poster);
+const TV_SERIES = [26, 27, 28, 29, 6, 15, 10, 11, 12, 13, 8, 22, 24, 18, 20, 9, 2, 17, 21, 7, 23, 14].map(poster);
 const ANIME = [3, 16, 25, 4, 1, 5, 19].map(poster);
 const MUSIC = [12, 22, 13, 8, 24, 18, 15, 20, 11].map(poster);
 const VERTICAL = [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4].map(vertical);
