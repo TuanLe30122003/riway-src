@@ -54,6 +54,10 @@ export default function ContactForm() {
 
   return (
     <form onSubmit={onSubmit} noValidate className="flex flex-col gap-3 md:gap-[11px]">
+      <div aria-hidden className="absolute -left-[9999px] h-px w-px overflow-hidden">
+        <label htmlFor="contact-website">Website</label>
+        <input id="contact-website" type="text" tabIndex={-1} autoComplete="off" {...register("website")} />
+      </div>
       <StaggerGroup className="flex flex-col gap-3 md:gap-[11px]" stagger={0.1}>
         <StaggerItem className="grid gap-3 sm:grid-cols-2 sm:gap-[13px]">
           <div>

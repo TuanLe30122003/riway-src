@@ -37,6 +37,9 @@ Mở http://localhost:3000. Trang gốc sẽ tự chuyển sang `/en`.
 | Biến | Ý nghĩa |
 | --- | --- |
 | `NEXT_PUBLIC_SITE_URL` | Domain chính thức, dùng cho canonical, hreflang, Open Graph, sitemap và robots. Để trống thì trên Vercel tự dùng domain production của project (`VERCEL_PROJECT_PRODUCTION_URL`) |
+| `RESEND_API_KEY` | API key của Resend để form liên hệ gửi email. Thiếu biến này thì trên production form báo lỗi, còn khi chạy dev thì chỉ in nội dung ra console |
+| `CONTACT_TO_EMAIL` | Địa chỉ nhận tin từ form, nhiều địa chỉ cách nhau bằng dấu phẩy. Mặc định `contact@riwaymedia.com` |
+| `CONTACT_FROM_EMAIL` | Địa chỉ gửi, phải thuộc domain đã xác minh trên Resend. Mặc định `RIWAY MEDIA GROUP <no-reply@riwaymedia.com>` |
 | `FIGMA_TOKEN` | Personal access token của Figma (scope `file_content:read`). Chỉ cần khi chạy `yarn figma:export` |
 | `FIGMA_FILE_KEY` | Mặc định là file Riway |
 
@@ -106,4 +109,6 @@ Tên đối tác hiển thị (alt) khai báo trong `constants/partners.ts` theo
 
 ## Form liên hệ
 
-`app/actions/contact.ts` validate dữ liệu bằng schema trong `lib/contact-schema.ts`. Hàm `deliverContact` hiện chưa gửi đi đâu. Cần nối kênh nhận tin (email, Telegram bot, CRM...) vào hàm này.
+`app/actions/contact.ts` validate dữ liệu bằng schema trong `lib/contact-schema.ts`, rồi gửi email qua API của Resend tới `CONTACT_TO_EMAIL`. Email đặt Reply-To là địa chỉ người gửi, nên bấm Trả lời là trả lời thẳng cho khách. Form có một trường ẩn `website` để lọc bot: nếu trường này có giá trị thì tin nhắn bị bỏ qua nhưng vẫn báo thành công.
+
+Domain `riwaymedia.com` phải được xác minh trên Resend (các bản ghi DKIM/SPF thêm ở trang quản lý DNS của tên miền) thì mới gửi được từ `no-reply@riwaymedia.com`.
