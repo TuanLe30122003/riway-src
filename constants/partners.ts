@@ -17,6 +17,7 @@ const PARTNERS = [
   "bzzz!",
   "SConnect",
   "SoundCloud",
+  "CostMusik Group",
 ].map((name, index) => ({ name, src: logo(index + 1) }));
 
 export const PARTNER_ROWS = [PARTNERS.slice(0, 8), PARTNERS.slice(8)];
