@@ -74,15 +74,15 @@
       "items": [
         {
           "title": "Phân phối phim & Quản lý bản quyền",
-          "description": "Với 3 năm kinh nghiệm trong mạng lưới phim trên YouTube, Riway Media hợp tác cùng nhà sản xuất và đài truyền hình để quản lý, cấp phép và phân phối nội dung."
+          "description": "Với 3 năm kinh nghiệm bản địa hóa và vận hành mạng lưới kênh YouTube chuyên về phim truyền hình và phim điện ảnh, Riway Media sẵn sàng hợp tác cùng nhà sản xuất, đài truyền hình và các mạng lưới truyền thông trong quản lý nội dung và cấp phép bản quyền. Hãy kết nối với chúng tôi ngay hôm nay để mở ra những cơ hội hợp tác mới!"
         },
         {
           "title": "Phát triển nhạc Local & Chill",
-          "description": "Hợp tác cùng Riway Media để sáng tạo, phát triển và lan tỏa những trải nghiệm âm nhạc độc đáo đến nhiều khán giả hơn."
+          "description": "Nếu âm nhạc là cửa sổ tâm hồn, thì hợp tác chính là nhịp cầu đưa những giai điệu ấy đi xa hơn. Hãy cùng Riway Media tạo nên những dấu ấn âm nhạc đáng nhớ — bạn đã sẵn sàng trò chuyện cùng chúng tôi chưa?"
         },
         {
           "title": "Hợp tác mạng lưới MCN",
-          "description": "Tận dụng kho nhạc và phim có bản quyền của Riway Media để mở rộng và phát triển mạng lưới YouTube và Facebook của bạn."
+          "description": "Sở hữu kho nội dung âm nhạc và phim ảnh có bản quyền phong phú, Riway Media luôn chào đón các chủ sở hữu và quản lý MCN kết nối, khai thác nguồn tài nguyên và phát triển những kênh mới trên YouTube và Facebook."
         },
         {
           "title": "Cấp phép & Bản địa hóa nội dung toàn cầu",
@@ -118,7 +118,7 @@
       "title": "Một tập đoàn truyền thông có trụ sở tại Việt Nam,\nđược xây dựng để hợp tác nội dung toàn cầu",
       "tagline": "Phát triển hệ sinh thái truyền thông số",
       "channels": "Kênh Youtube",
-      "years": "Số năm hoạt động kênh",
+      "silverButtons": "Nút bạc YouTube",
       "views": "Hơn <count></count> triệu lượt xem",
       "viewsLabel": "Tổng lượt xem các nền tảng"
     }

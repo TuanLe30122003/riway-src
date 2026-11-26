@@ -7,10 +7,10 @@ import { YoutubeIcon } from "@/components/Common/BrandIcons";
 import Container from "@/components/Common/Container";
 import SectionHeading from "@/components/Common/SectionHeading";
 import StatCard from "@/components/Home/About/StatCard";
-import { Calendar, Eye } from "lucide-react";
+import { Award, Eye } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-const STATS = { channels: 30, years: 3, views: 100 };
+const STATS = { channels: 30, silverButtons: 3, views: 100 };
 
 
 export default function About() {
@@ -65,9 +65,9 @@ export default function About() {
               />
               <StatCard
                 className="h-[150px] md:h-[182px]"
-                value={<CountUp to={STATS.years} suffix="+" className="text-[42px] md:text-[60px]" />}
-                icon={<Calendar strokeWidth={1.6} />}
-                label={t("years")}
+                value={<CountUp to={STATS.silverButtons} suffix="+" className="text-[42px] md:text-[60px]" />}
+                icon={<Award strokeWidth={1.6} />}
+                label={t("silverButtons")}
               />
               <StatCard
                 className="col-span-2 h-[140px] md:h-[169px]"
