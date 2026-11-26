@@ -12,7 +12,10 @@ function renderText(text: string, highlightClassName: string) {
     const content = highlight ? part.slice(4, -5) : part;
     const lines = content.split("\n");
     lines.forEach((line, lineIndex) => {
-      if (lineIndex > 0) nodes.push(<br key={`br-${partIndex}-${lineIndex}`} />);
+      if (lineIndex > 0) {
+        nodes.push(<Fragment key={`sp-${partIndex}-${lineIndex}`}> </Fragment>);
+        nodes.push(<br key={`br-${partIndex}-${lineIndex}`} />);
+      }
       if (!line) return;
       nodes.push(
         highlight ? (
