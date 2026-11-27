@@ -75,7 +75,7 @@ export default function LocaleSwitcher({ className }: { className?: string }) {
         ref={listRef}
         role="listbox"
         inert={!open}
-        className="glass invisible absolute top-full right-0 mt-2 min-w-[110px] origin-top-right overflow-hidden rounded-lg border border-white/10 py-1 opacity-0"
+        className="glass invisible absolute top-full right-0 mt-2 w-max min-w-[168px] origin-top-right overflow-hidden rounded-lg border border-white/10 py-1 opacity-0"
       >
         {routing.locales.map((item) => (
           <li key={item}>
@@ -85,7 +85,7 @@ export default function LocaleSwitcher({ className }: { className?: string }) {
               aria-selected={item === locale}
               onClick={() => select(item)}
               className={cn(
-                "flex w-full items-center justify-between px-4 py-2 text-left text-sm transition-colors hover:bg-white/10",
+                "flex w-full items-center justify-between gap-6 px-4 py-2.5 text-left text-sm whitespace-nowrap transition-colors hover:bg-white/10",
                 item === locale ? "text-gold" : "text-white",
               )}
             >
